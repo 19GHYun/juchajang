@@ -163,60 +163,43 @@ const CameraScreen: React.FC = () => {
     }
   };
 
-  // 도커 API로 번호판 좌표 감지 (이미지 크기 정보 포함)
+  // Roboflow API로 번호판 좌표 감지 (이미지 크기 정보 포함)
   const detectLicensePlateCoordinatesWithSize = async (imageDataUrl: string): Promise<{plateDetections: LicensePlateDetection[], imageSize: {width: number, height: number}} | null> => {
     try {
-      console.log('🎯 도커 API로 번호판 좌표 감지 시작...');
+      console.log('🎯 Roboflow API로 번호판 좌표 감지 시작...');
 
       // base64 데이터에서 실제 base64 부분만 추출
       const base64Data = imageDataUrl.replace(/^data:image\/[a-z]+;base64,/, '');
       console.log('📸 base64 데이터 준비 완료, 길이:', base64Data.length);
 
-      // JSON 형태로 요청 (스웨거와 동일한 형식)
-      const requestBody = {
-        "model_id": "yolov8-anpr/1",
-        "api_key": "IMv3ZjNtl2lvMVUKOZCr",
-        "image": [
-          {
-            "type": "base64",
-            "value": base64Data
-          }
-        ],
-        "confidence": 0.4,
-        "iou_threshold": 0.5
-      };
+      console.log('📋 Roboflow API 요청 준비 완료');
 
-      console.log('📋 JSON 요청 준비 완료');
-
-      // 도커 API 호출 (직접 localhost:9001) - JSON으로 요청
-      const apiResponse = await fetch('/infer/object_detection', {
-        mode: 'cors',
+      // Roboflow API 직접 호출
+      const apiResponse = await fetch('https://detect.roboflow.com/yolov8-anpr/1', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'accept': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify(requestBody),
+        body: `api_key=IMv3ZjNtl2lvMVUKOZCr&image=${encodeURIComponent(base64Data)}&confidence=0.4&overlap=50`
       });
 
       if (!apiResponse.ok) {
-        throw new Error(`도커 API 오류: ${apiResponse.status}`);
+        throw new Error(`Roboflow API 오류: ${apiResponse.status}`);
       }
 
-      const results: DockerAPIResponse[] = await apiResponse.json();
-      console.log('📊 도커 API 응답:', results);
+      const result = await apiResponse.json();
+      console.log('📊 Roboflow API 응답:', result);
 
-      if (!results || results.length === 0 || !results[0].predictions || results[0].predictions.length === 0) {
+      if (!result || !result.predictions || result.predictions.length === 0) {
         console.log('⚠️ 번호판이 감지되지 않음');
         return null;
       }
 
-      const firstResult = results[0];
-      console.log(`📊 도커 API 이미지 크기: ${firstResult.image.width}x${firstResult.image.height}`);
-      console.log('📊 첫 번째 결과의 predictions:', firstResult.predictions);
+      console.log(`📊 Roboflow API 이미지 크기: ${result.image.width}x${result.image.height}`);
+      console.log('📊 predictions:', result.predictions);
 
       // 번호판 좌표 변환 (중심점 + 크기 → 좌상단, 우하단)
-      const plateDetections: LicensePlateDetection[] = firstResult.predictions.map(pred => {
+      const plateDetections: LicensePlateDetection[] = result.predictions.map((pred: any) => {
         const x1 = pred.x - pred.width / 2;
         const y1 = pred.y - pred.height / 2;
         const x2 = pred.x + pred.width / 2;
@@ -233,71 +216,54 @@ const CameraScreen: React.FC = () => {
       return {
         plateDetections,
         imageSize: {
-          width: firstResult.image.width,
-          height: firstResult.image.height
+          width: result.image.width,
+          height: result.image.height
         }
       };
 
     } catch (error) {
-      console.error('❌ 도커 API 번호판 감지 실패:', error);
+      console.error('❌ Roboflow API 번호판 감지 실패:', error);
       return null;
     }
   };
 
-  // 도커 API로 번호판 좌표 감지 (기존 함수 유지)
+  // Roboflow API로 번호판 좌표 감지 (기존 함수 유지)
   const detectLicensePlateCoordinates = async (imageDataUrl: string): Promise<LicensePlateDetection[]> => {
     try {
-      console.log('🎯 도커 API로 번호판 좌표 감지 시작...');
+      console.log('🎯 Roboflow API로 번호판 좌표 감지 시작...');
 
       // base64 데이터에서 실제 base64 부분만 추출
       const base64Data = imageDataUrl.replace(/^data:image\/[a-z]+;base64,/, '');
       console.log('📸 base64 데이터 준비 완료, 길이:', base64Data.length);
 
-      // JSON 형태로 요청 (스웨거와 동일한 형식)
-      const requestBody = {
-        "model_id": "yolov8-anpr/1",
-        "api_key": "IMv3ZjNtl2lvMVUKOZCr",
-        "image": [
-          {
-            "type": "base64",
-            "value": base64Data
-          }
-        ],
-        "confidence": 0.4,
-        "iou_threshold": 0.5
-      };
+      console.log('📋 Roboflow API 요청 준비 완료');
 
-      console.log('📋 JSON 요청 준비 완료');
-
-      // 도커 API 호출 (직접 localhost:9001) - JSON으로 요청
-      const apiResponse = await fetch('/infer/object_detection', {
-        mode: 'cors',
+      // Roboflow API 직접 호출
+      const apiResponse = await fetch('https://detect.roboflow.com/yolov8-anpr/1', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'accept': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify(requestBody),
+        body: `api_key=IMv3ZjNtl2lvMVUKOZCr&image=${encodeURIComponent(base64Data)}&confidence=0.4&overlap=50`
       });
 
       if (!apiResponse.ok) {
-        throw new Error(`도커 API 오류: ${apiResponse.status}`);
+        throw new Error(`Roboflow API 오류: ${apiResponse.status}`);
       }
 
-      const results: DockerAPIResponse[] = await apiResponse.json();
-      console.log('📊 도커 API 응답:', results);
+      const result = await apiResponse.json();
+      console.log('📊 Roboflow API 응답:', result);
 
-      if (!results || results.length === 0 || !results[0].predictions || results[0].predictions.length === 0) {
+      if (!result || !result.predictions || result.predictions.length === 0) {
         console.log('⚠️ 번호판이 감지되지 않음');
         return [];
       }
 
-      const firstResult = results[0];
-      console.log(`📊 도커 API 이미지 크기: ${firstResult.image.width}x${firstResult.image.height}`);
-      console.log('📊 첫 번째 결과의 predictions:', firstResult.predictions);
+      console.log(`📊 Roboflow API 이미지 크기: ${result.image.width}x${result.image.height}`);
+      console.log('📊 predictions:', result.predictions);
 
       // 번호판 좌표 변환 (중심점 + 크기 → 좌상단, 우하단)
-      const plateDetections: LicensePlateDetection[] = firstResult.predictions.map(pred => {
+      const plateDetections: LicensePlateDetection[] = result.predictions.map((pred: any) => {
         const x1 = pred.x - pred.width / 2;
         const y1 = pred.y - pred.height / 2;
         const x2 = pred.x + pred.width / 2;
@@ -313,7 +279,7 @@ const CameraScreen: React.FC = () => {
       return plateDetections;
 
     } catch (error) {
-      console.error('❌ 도커 API 번호판 감지 실패:', error);
+      console.error('❌ Roboflow API 번호판 감지 실패:', error);
       return [];
     }
   };
@@ -736,7 +702,7 @@ const CameraScreen: React.FC = () => {
                   return;
                 }
 
-                console.log('🎯 도커 API로 번호판 좌표 감지 시작...');
+                console.log('🎯 Roboflow API로 번호판 좌표 감지 시작...');
                 const plateDetectionResult = await detectLicensePlateCoordinatesWithSize(lastValidImage);
 
                 if (plateDetectionResult && plateDetectionResult.plateDetections.length > 0) {
@@ -927,7 +893,7 @@ const CameraScreen: React.FC = () => {
         return;
       }
 
-      console.log('🎯 도커 API로 번호판 좌표 감지 시작...');
+      console.log('🎯 Roboflow API로 번호판 좌표 감지 시작...');
       const plateDetections = await detectLicensePlateCoordinates(lastValidImage);
 
       if (plateDetections.length > 0) {
@@ -1027,7 +993,7 @@ const CameraScreen: React.FC = () => {
         return;
       }
 
-      console.log('🎯 도커 API로 번호판 좌표 감지 시작...');
+      console.log('🎯 Roboflow API로 번호판 좌표 감지 시작...');
       const plateDetections = await detectLicensePlateCoordinates(lastValidImage);
 
       if (plateDetections.length > 0) {

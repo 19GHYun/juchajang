@@ -3,10 +3,6 @@
     {
       "source": "/api/(.*)",
       "destination": "https://j13c108.p.ssafy.io/api/$1"
-    },
-    {
-      "source": "/infer/(.*)",
-      "destination": "https://juchajang-production.up.railway.app/infer/$1"
     }
   ],
   "headers": [
@@ -29,23 +25,6 @@
         {
           "key": "Access-Control-Allow-Methods",
           "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        }
-      ]
-    },
-    {
-      "source": "/infer/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, OPTIONS"
         },
         {
           "key": "Access-Control-Allow-Headers",
