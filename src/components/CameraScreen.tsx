@@ -180,7 +180,7 @@ const CameraScreen: React.FC = () => {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `api_key=IMv3ZjNtl2lvMVUKOZCr&image=${encodeURIComponent(base64Data)}&confidence=0.4&overlap=50`
+        body: `api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73&image=${encodeURIComponent(base64Data)}&confidence=0.4&overlap=50`
       });
 
       if (!apiResponse.ok) {
@@ -244,7 +244,7 @@ const CameraScreen: React.FC = () => {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `api_key=IMv3ZjNtl2lvMVUKOZCr&image=${encodeURIComponent(base64Data)}&confidence=0.4&overlap=50`
+        body: `api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73&image=${encodeURIComponent(base64Data)}&confidence=0.4&overlap=50`
       });
 
       if (!apiResponse.ok) {
