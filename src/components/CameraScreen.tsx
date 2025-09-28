@@ -540,11 +540,11 @@ const CameraScreen: React.FC = () => {
         parkingLotId: parkingLotId.toString()
       });
 
-      // 성공한 코드와 동일한 방식: axios + 직접 백엔드 URL
-      const url = `https://j13c108.p.ssafy.io/api/v1/plates/scan?eventType=${encodeURIComponent(eventType)}&parkingLotId=${encodeURIComponent(parkingLotId.toString())}`;
+      // Vercel 프록시를 통한 백엔드 호출 (CORS 회피)
+      const url = `/api/v1/plates/scan?eventType=${encodeURIComponent(eventType)}&parkingLotId=${encodeURIComponent(parkingLotId.toString())}`;
 
       console.log('🌐 최종 요청 URL:', url);
-      console.log('📨 요청 방식: POST with multipart/form-data');
+      console.log('📨 요청 방식: POST with multipart/form-data (Vercel 프록시 경유)');
 
       const axios = (await import('axios')).default;
       const springResponse = await axios.post(url, formData, {
