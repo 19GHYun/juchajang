@@ -175,7 +175,7 @@ const CameraScreen: React.FC = () => {
       console.log('📋 Roboflow API 요청 준비 완료');
 
       // Roboflow API 직접 호출 (올바른 형식)
-      const apiResponse = await fetch(`https://detect.roboflow.com/license-plate-recognition-rxg4e/4?api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73&confidence=0.4&overlap=50`, {
+      const apiResponse = await fetch(`https://detect.roboflow.com/license-plate-recognition-rxg4e/4?api_key=IMv3ZjNtl2lvMVUKOZCr&confidence=0.4&overlap=50`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -241,7 +241,7 @@ const CameraScreen: React.FC = () => {
       console.log('📋 Roboflow API 요청 준비 완료');
 
       // Roboflow API 직접 호출 (올바른 형식)
-      const apiResponse = await fetch(`https://detect.roboflow.com/license-plate-recognition-rxg4e/4?api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73&confidence=0.4&overlap=50`, {
+      const apiResponse = await fetch(`https://detect.roboflow.com/license-plate-recognition-rxg4e/4?api_key=IMv3ZjNtl2lvMVUKOZCr&confidence=0.4&overlap=50`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
