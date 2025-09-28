@@ -1,36 +1,24 @@
 {
-  "version": 2,
-  "name": "plate-pay-parking",
-  "builds": [
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/static/(.*)",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      }
+      "source": "/api/(.*)",
+      "destination": "https://j13c108.p.ssafy.io/api/$1"
     },
     {
-      "src": "/api/(.*)",
-      "dest": "https://j13c108.p.ssafy.io/api/$1"
-    },
-    {
-      "src": "/infer/(.*)",
-      "dest": "https://your-roboflow-app.railway.app/infer/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/infer/(.*)",
+      "destination": "https://your-roboflow-app.railway.app/infer/$1"
     }
   ],
   "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
     {
       "source": "/api/(.*)",
       "headers": [
@@ -65,12 +53,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "REACT_APP_ENV": "production",
-    "REACT_APP_ROBOFLOW_API_URL": "/infer",
-    "REACT_APP_SPRING_API_URL": "/api",
-    "REACT_APP_ROBOFLOW_MODEL_ID": "yolov8-anpr/1",
-    "REACT_APP_ROBOFLOW_API_KEY": "IMv3ZjNtl2lvMVUKOZCr"
-  }
+  ]
 }
