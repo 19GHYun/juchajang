@@ -174,17 +174,23 @@ const CameraScreen: React.FC = () => {
 
       console.log('📋 Roboflow API 요청 준비 완료');
 
-      // Roboflow API 직접 호출
-      const apiResponse = await fetch('https://detect.roboflow.com/yolov8-anpr/1', {
+      // Roboflow API 직접 호출 (JSON 형식)
+      const apiResponse = await fetch(`https://detect.roboflow.com/yolov8-anpr/1?api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json'
         },
-        body: `api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73&image=${encodeURIComponent(base64Data)}&confidence=0.4&overlap=50`
+        body: JSON.stringify({
+          image: base64Data,
+          confidence: 0.4,
+          overlap: 50
+        })
       });
 
       if (!apiResponse.ok) {
-        throw new Error(`Roboflow API 오류: ${apiResponse.status}`);
+        const errorText = await apiResponse.text();
+        console.error('API 응답 오류:', errorText);
+        throw new Error(`Roboflow API 오류: ${apiResponse.status} - ${errorText}`);
       }
 
       const result = await apiResponse.json();
@@ -238,17 +244,23 @@ const CameraScreen: React.FC = () => {
 
       console.log('📋 Roboflow API 요청 준비 완료');
 
-      // Roboflow API 직접 호출
-      const apiResponse = await fetch('https://detect.roboflow.com/yolov8-anpr/1', {
+      // Roboflow API 직접 호출 (JSON 형식)
+      const apiResponse = await fetch(`https://detect.roboflow.com/yolov8-anpr/1?api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json'
         },
-        body: `api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73&image=${encodeURIComponent(base64Data)}&confidence=0.4&overlap=50`
+        body: JSON.stringify({
+          image: base64Data,
+          confidence: 0.4,
+          overlap: 50
+        })
       });
 
       if (!apiResponse.ok) {
-        throw new Error(`Roboflow API 오류: ${apiResponse.status}`);
+        const errorText = await apiResponse.text();
+        console.error('API 응답 오류:', errorText);
+        throw new Error(`Roboflow API 오류: ${apiResponse.status} - ${errorText}`);
       }
 
       const result = await apiResponse.json();
