@@ -6,7 +6,7 @@
     },
     {
       "source": "/infer/(.*)",
-      "destination": "https://your-roboflow-app.railway.app/infer/$1"
+      "destination": "https://juchajang-production.up.railway.app/infer/$1"
     }
   ],
   "headers": [
