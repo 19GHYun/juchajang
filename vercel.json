@@ -1,0 +1,76 @@
+{
+  "version": 2,
+  "name": "plate-pay-parking",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "https://j13c108.p.ssafy.io/api/$1"
+    },
+    {
+      "src": "/infer/(.*)",
+      "dest": "https://your-roboflow-app.railway.app/infer/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    },
+    {
+      "source": "/infer/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "REACT_APP_ENV": "production",
+    "REACT_APP_ROBOFLOW_API_URL": "/infer",
+    "REACT_APP_SPRING_API_URL": "/api",
+    "REACT_APP_ROBOFLOW_MODEL_ID": "yolov8-anpr/1",
+    "REACT_APP_ROBOFLOW_API_KEY": "IMv3ZjNtl2lvMVUKOZCr"
+  }
+}
