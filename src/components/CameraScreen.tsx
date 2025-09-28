@@ -174,17 +174,28 @@ const CameraScreen: React.FC = () => {
 
       console.log('📋 Roboflow API 요청 준비 완료');
 
-      // Roboflow API 직접 호출 (JSON 형식)
-      const apiResponse = await fetch(`https://detect.roboflow.com/yolov8-anpr/1?api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73`, {
+      // Roboflow API 직접 호출 (Docker 서버와 동일한 형식)
+      const requestBody = {
+        "model_id": "yolov8-anpr/1",
+        "api_key": "rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73",
+        "image": [
+          {
+            "type": "base64",
+            "value": base64Data
+          }
+        ],
+        "confidence": 0.4,
+        "iou_threshold": 0.5
+      };
+
+      const apiResponse = await fetch('https://detect.roboflow.com/object_detection', {
+        mode: 'cors',
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'accept': 'application/json'
         },
-        body: JSON.stringify({
-          image: base64Data,
-          confidence: 0.4,
-          overlap: 50
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!apiResponse.ok) {
@@ -193,19 +204,20 @@ const CameraScreen: React.FC = () => {
         throw new Error(`Roboflow API 오류: ${apiResponse.status} - ${errorText}`);
       }
 
-      const result = await apiResponse.json();
-      console.log('📊 Roboflow API 응답:', result);
+      const results: DockerAPIResponse[] = await apiResponse.json();
+      console.log('📊 Roboflow API 응답:', results);
 
-      if (!result || !result.predictions || result.predictions.length === 0) {
+      if (!results || results.length === 0 || !results[0].predictions || results[0].predictions.length === 0) {
         console.log('⚠️ 번호판이 감지되지 않음');
         return null;
       }
 
-      console.log(`📊 Roboflow API 이미지 크기: ${result.image.width}x${result.image.height}`);
-      console.log('📊 predictions:', result.predictions);
+      const firstResult = results[0];
+      console.log(`📊 Roboflow API 이미지 크기: ${firstResult.image.width}x${firstResult.image.height}`);
+      console.log('📊 첫 번째 결과의 predictions:', firstResult.predictions);
 
       // 번호판 좌표 변환 (중심점 + 크기 → 좌상단, 우하단)
-      const plateDetections: LicensePlateDetection[] = result.predictions.map((pred: any) => {
+      const plateDetections: LicensePlateDetection[] = firstResult.predictions.map(pred => {
         const x1 = pred.x - pred.width / 2;
         const y1 = pred.y - pred.height / 2;
         const x2 = pred.x + pred.width / 2;
@@ -222,8 +234,8 @@ const CameraScreen: React.FC = () => {
       return {
         plateDetections,
         imageSize: {
-          width: result.image.width,
-          height: result.image.height
+          width: firstResult.image.width,
+          height: firstResult.image.height
         }
       };
 
@@ -244,17 +256,28 @@ const CameraScreen: React.FC = () => {
 
       console.log('📋 Roboflow API 요청 준비 완료');
 
-      // Roboflow API 직접 호출 (JSON 형식)
-      const apiResponse = await fetch(`https://detect.roboflow.com/yolov8-anpr/1?api_key=rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73`, {
+      // Roboflow API 직접 호출 (Docker 서버와 동일한 형식)
+      const requestBody = {
+        "model_id": "yolov8-anpr/1",
+        "api_key": "rf_D7lfBKSoUlQ2VaY3fuLm6HblpJ73",
+        "image": [
+          {
+            "type": "base64",
+            "value": base64Data
+          }
+        ],
+        "confidence": 0.4,
+        "iou_threshold": 0.5
+      };
+
+      const apiResponse = await fetch('https://detect.roboflow.com/object_detection', {
+        mode: 'cors',
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'accept': 'application/json'
         },
-        body: JSON.stringify({
-          image: base64Data,
-          confidence: 0.4,
-          overlap: 50
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!apiResponse.ok) {
@@ -263,19 +286,20 @@ const CameraScreen: React.FC = () => {
         throw new Error(`Roboflow API 오류: ${apiResponse.status} - ${errorText}`);
       }
 
-      const result = await apiResponse.json();
-      console.log('📊 Roboflow API 응답:', result);
+      const results: DockerAPIResponse[] = await apiResponse.json();
+      console.log('📊 Roboflow API 응답:', results);
 
-      if (!result || !result.predictions || result.predictions.length === 0) {
+      if (!results || results.length === 0 || !results[0].predictions || results[0].predictions.length === 0) {
         console.log('⚠️ 번호판이 감지되지 않음');
         return [];
       }
 
-      console.log(`📊 Roboflow API 이미지 크기: ${result.image.width}x${result.image.height}`);
-      console.log('📊 predictions:', result.predictions);
+      const firstResult = results[0];
+      console.log(`📊 Roboflow API 이미지 크기: ${firstResult.image.width}x${firstResult.image.height}`);
+      console.log('📊 첫 번째 결과의 predictions:', firstResult.predictions);
 
       // 번호판 좌표 변환 (중심점 + 크기 → 좌상단, 우하단)
-      const plateDetections: LicensePlateDetection[] = result.predictions.map((pred: any) => {
+      const plateDetections: LicensePlateDetection[] = firstResult.predictions.map(pred => {
         const x1 = pred.x - pred.width / 2;
         const y1 = pred.y - pred.height / 2;
         const x2 = pred.x + pred.width / 2;
